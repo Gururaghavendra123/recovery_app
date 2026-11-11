@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    overscroll-behavior-y: contain;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-panel {
+  animation: panelIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-slide-up {
+  animation: slideUp 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom gym-friendly stepped slider styling */
+input[type='range'].gym-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+input[type='range'].gym-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 9999px;
+}
+
+input[type='range'].gym-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -9px;
+  height: 26px;
+  width: 26px;
+  border-radius: 9999px;
+  background: #f59e0b;
+  border: 3px solid #09090b;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+input[type='range'].gym-slider:active::-webkit-slider-thumb {
+  transform: scale(1.16);
+  background: #fbbf24;
+  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.2), 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+input[type='range'].gym-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 9999px;
+}
+
+input[type='range'].gym-slider::-moz-range-thumb {
+  height: 26px;
+  width: 26px;
+  border-radius: 9999px;
+  background: #f59e0b;
+  border: 3px solid #09090b;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Safe area padding for iPhone notch/home bar */
+.pb-safe {
+  padding-bottom: max(0.65rem, env(safe-area-inset-bottom));
+}
