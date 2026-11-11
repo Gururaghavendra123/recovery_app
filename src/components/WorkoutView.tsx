@@ -4,11 +4,14 @@ import {
   AlertTriangle,
   CalendarDays,
   Check,
+  CheckCircle2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
   Info,
+  Pencil,
+  Play,
   RotateCcw,
   Timer,
 } from 'lucide-react';
@@ -27,6 +30,7 @@ import {
   formatShortDayMonth,
   getTodayDateKey,
   makeFeelingId,
+  makeSessionCompletionId,
   makeSessionDateId,
   makeSetId,
   type ExerciseFeeling,
@@ -88,6 +92,8 @@ interface ExerciseCardProps {
   currentFeeling?: Feeling;
   prevFeeling?: Feeling;
   autoStartRest: boolean;
+  isSubmittedLocked: boolean;
+  onRequestEdit: () => void;
   onStartTimer: (label: string, seconds: number) => void;
   onEnsureSessionDate: () => Promise<void>;
 }
@@ -101,6 +107,8 @@ function ExerciseCard({
   currentFeeling,
   prevFeeling,
   autoStartRest,
+  isSubmittedLocked,
+  onRequestEdit,
   onStartTimer,
   onEnsureSessionDate,
 }: ExerciseCardProps) {
@@ -225,12 +233,24 @@ function ExerciseCard({
   const [draft, setDraft] = useState(() => computeDefaultsForSet(0));
 
   const openSet = (idx: number) => {
+    if (isSubmittedLocked) {
+      onRequestEdit();
+    }
     if (activeSetIndex === idx) {
       setActiveSetIndex(null);
       return;
     }
     setActiveSetIndex(idx);
     setDraft(computeDefaultsForSet(idx));
+  };
+
+  const handleStartExercise = () => {
+    if (isSubmittedLocked) {
+      onRequestEdit();
+    }
+    const targetIdx = firstPendingIndex ?? 0;
+    setActiveSetIndex(targetIdx);
+    setDraft(computeDefaultsForSet(targetIdx));
   };
 
   const handleLogSet = async () => {
@@ -295,6 +315,9 @@ function ExerciseCard({
   };
 
   const handleSelectFeeling = async (feeling: Feeling) => {
+    if (isSubmittedLocked) {
+      onRequestEdit();
+    }
     const id = makeFeelingId(week, dayId, resolved.def.id);
     if (currentFeeling === feeling) {
       await db.exerciseFeelings.delete(id);
@@ -412,44 +435,87 @@ function ExerciseCard({
         </div>
       )}
 
-      {/* Set Chips */}
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {resolved.setLabels.map((label, idx) => {
-          const log = logsByIndex.get(idx);
-          const isDone = Boolean(log?.completed);
-          const isActive = activeSetIndex === idx;
-          const summary = log ? formatCompactSetSummary(log, resolved.weightSpec) : '';
+      {/* Set Category Header + Start / Edit Action + Chips */}
+      <div className="mt-3 space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+            Sets
+          </span>
 
-          return (
+          {!isSubmittedLocked && activeSetIndex === null && (
+            firstPendingIndex !== null ? (
+              <button
+                type="button"
+                onClick={handleStartExercise}
+                className="flex items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1 text-[11px] font-extrabold text-zinc-950 transition-transform active:scale-95 active:bg-amber-400"
+              >
+                <Play className="h-3 w-3 fill-current" />
+                {completedCount === 0
+                  ? 'Start'
+                  : `Start ${resolved.setLabels[firstPendingIndex]}`}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleStartExercise}
+                className="flex items-center gap-1 rounded-lg border border-zinc-700/80 bg-zinc-950 px-2.5 py-1 text-[11px] font-semibold text-zinc-300 transition-transform active:scale-95 active:bg-zinc-800"
+              >
+                <Pencil className="h-3 w-3" />
+                Edit Sets
+              </button>
+            )
+          )}
+
+          {isSubmittedLocked && (
             <button
-              key={label}
               type="button"
-              onClick={() => openSet(idx)}
-              className={`flex min-h-[34px] items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-semibold transition-all duration-150 active:scale-95 ${
-                isActive
-                  ? 'border-amber-400 bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/50'
-                  : isDone
-                  ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-200'
-                  : 'border-zinc-800 bg-zinc-950/70 text-zinc-300'
-              }`}
+              onClick={handleStartExercise}
+              className="flex items-center gap-1 rounded-lg border border-zinc-700/80 bg-zinc-950 px-2.5 py-1 text-[11px] font-semibold text-zinc-300 transition-transform active:scale-95 active:bg-zinc-800"
             >
-              {isDone && <Check className="h-3.5 w-3.5 text-emerald-400" />}
-              <span>{label}</span>
-              {isDone && summary && (
-                <span className="font-bold tabular-nums text-emerald-300">
-                  • {summary}
-                </span>
-              )}
-              {!isDone && firstPendingIndex === idx && !isActive && (
-                <ChevronDown className="h-3 w-3 text-amber-400" />
-              )}
+              <Pencil className="h-3 w-3" />
+              Edit
             </button>
-          );
-        })}
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-1.5">
+          {resolved.setLabels.map((label, idx) => {
+            const log = logsByIndex.get(idx);
+            const isDone = Boolean(log?.completed);
+            const isActive = activeSetIndex === idx && !isSubmittedLocked;
+            const summary = log ? formatCompactSetSummary(log, resolved.weightSpec) : '';
+
+            return (
+              <button
+                key={label}
+                type="button"
+                onClick={() => openSet(idx)}
+                className={`flex min-h-[34px] items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-semibold transition-all duration-150 active:scale-95 ${
+                  isActive
+                    ? 'border-amber-400 bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/50'
+                    : isDone
+                    ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-200'
+                    : 'border-zinc-800 bg-zinc-950/70 text-zinc-300'
+                }`}
+              >
+                {isDone && <Check className="h-3.5 w-3.5 text-emerald-400" />}
+                <span>{label}</span>
+                {isDone && summary && (
+                  <span className="font-bold tabular-nums text-emerald-300">
+                    • {summary}
+                  </span>
+                )}
+                {!isDone && firstPendingIndex === idx && !isActive && (
+                  <ChevronDown className="h-3 w-3 text-amber-400" />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Inline Slider Logger for active set */}
-      {activeSetIndex !== null && (
+      {!isSubmittedLocked && activeSetIndex !== null && (
         <div className="animate-panel mt-3 space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/90 p-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
@@ -592,6 +658,8 @@ export function WorkoutView({
 }: WorkoutViewProps) {
   const [showWeekPicker, setShowWeekPicker] = useState(false);
   const [autoStartRest, setAutoStartRest] = useState(true);
+  const [isEditingSubmitted, setIsEditingSubmitted] = useState(false);
+  const [showIncompleteModal, setShowIncompleteModal] = useState(false);
   const todayKey = getTodayDateKey();
   const [draftDateKey, setDraftDateKey] = useState<string>(
     preferredDateKey || todayKey
@@ -599,6 +667,8 @@ export function WorkoutView({
 
   useEffect(() => {
     setDraftDateKey(preferredDateKey || getTodayDateKey());
+    setIsEditingSubmitted(false);
+    setShowIncompleteModal(false);
   }, [preferredDateKey, week, dayId]);
 
   const dayDef = useMemo(
@@ -607,15 +677,27 @@ export function WorkoutView({
   );
 
   const sessionDateId = makeSessionDateId(week, dayId);
+  const sessionCompletionId = makeSessionCompletionId(week, dayId);
   const sessionDateRecord = useLiveQuery(
     () => db.sessionDates.get(sessionDateId),
     [sessionDateId]
+  );
+  const completionRecord = useLiveQuery(
+    () => db.sessionCompletions.get(sessionCompletionId),
+    [sessionCompletionId]
   );
   const weekSessionDates =
     useLiveQuery(
       () => db.sessionDates.filter((s) => s.week === week).toArray(),
       [week]
     ) ?? [];
+  const weekCompletions =
+    useLiveQuery(
+      () => db.sessionCompletions.where('week').equals(week).toArray(),
+      [week]
+    ) ?? [];
+
+  const isSubmittedLocked = Boolean(completionRecord) && !isEditingSubmitted;
 
   const effectiveDateKey = sessionDateRecord?.dateKey ?? draftDateKey;
 
@@ -796,7 +878,8 @@ export function WorkoutView({
             const dayDone = allWeekLogsForProgress.filter(
               (l) => l.dayId === d.id && l.completed
             ).length;
-            const dayFinished = dayDone >= dayTotal && dayTotal > 0;
+            const daySubmitted = weekCompletions.some((c) => c.dayId === d.id);
+            const dayFinished = daySubmitted || (dayDone >= dayTotal && dayTotal > 0);
             const matchedDate = weekSessionDates.find(
               (s) => s.dayId === d.id
             )?.dateKey;
@@ -815,8 +898,9 @@ export function WorkoutView({
                     : 'border-zinc-800 bg-zinc-950/70 text-zinc-400'
                 }`}
               >
-                <span className="text-[11px] font-bold uppercase tracking-wide">
+                <span className="flex items-center gap-0.5 text-[11px] font-bold uppercase tracking-wide">
                   {d.dayName}
+                  {daySubmitted && <Check className="h-3 w-3 text-emerald-400" />}
                 </span>
                 <span className="mt-0.5 text-[10px] font-medium leading-tight opacity-85">
                   {splitName}
@@ -928,6 +1012,29 @@ export function WorkoutView({
         </div>
       )}
 
+      {/* Submitted Status Top Banner */}
+      {isSubmittedLocked && (
+        <div className="animate-panel flex items-center justify-between gap-2 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-2.5 text-xs">
+          <div className="flex items-center gap-2 text-emerald-200">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+            <div>
+              <span className="font-bold">Day {dayId} Submitted</span>
+              <span className="text-emerald-300/80">
+                {' '}• {completedSetsInDay}/{totalSetsInDay} sets
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsEditingSubmitted(true)}
+            className="flex items-center gap-1 rounded-lg border border-emerald-500/40 bg-emerald-950/60 px-2.5 py-1 font-bold text-emerald-200 active:scale-95"
+          >
+            <Pencil className="h-3 w-3" />
+            Edit
+          </button>
+        </div>
+      )}
+
       {/* Exercise Cards */}
       <div className="space-y-3">
         {resolvedExercises.map((resolved) => {
@@ -955,12 +1062,172 @@ export function WorkoutView({
               currentFeeling={currentFeeling}
               prevFeeling={prevFeeling}
               autoStartRest={autoStartRest}
+              isSubmittedLocked={isSubmittedLocked}
+              onRequestEdit={() => setIsEditingSubmitted(true)}
               onStartTimer={onStartTimer}
               onEnsureSessionDate={ensureSessionDate}
             />
           );
         })}
       </div>
+
+      {/* Finish Day / Submitted Footer */}
+      <div className="pt-1">
+        {!isSubmittedLocked ? (
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => {
+                const incomplete = resolvedExercises
+                  .map((r) => ({
+                    id: r.def.id,
+                    orderLabel: r.def.orderLabel,
+                    name: r.name,
+                    done: weekLogs.filter(
+                      (l) => l.exerciseId === r.def.id && l.completed
+                    ).length,
+                    total: r.setsCount,
+                  }))
+                  .filter((item) => item.done < item.total);
+
+                if (incomplete.length > 0) {
+                  setShowIncompleteModal(true);
+                } else {
+                  ensureSessionDate().then(() =>
+                    db.sessionCompletions
+                      .put({
+                        id: sessionCompletionId,
+                        week,
+                        dayId,
+                        submittedAt: Date.now(),
+                      })
+                      .then(() => setIsEditingSubmitted(false))
+                  );
+                }
+              }}
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 text-sm font-extrabold text-zinc-950 shadow-lg transition-transform active:scale-[0.99] active:bg-emerald-400"
+            >
+              <CheckCircle2 className="h-5 w-5 stroke-[2.4]" />
+              {completionRecord ? `Save & Finish Day ${dayId}` : `Finish Day ${dayId}`}
+            </button>
+
+            {completionRecord && isEditingSubmitted && (
+              <button
+                type="button"
+                onClick={() => setIsEditingSubmitted(false)}
+                className="flex h-10 w-full items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-bold text-zinc-300 active:bg-zinc-800"
+              >
+                Done Editing
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-emerald-500/35 bg-emerald-950/20 p-3.5 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-sm font-extrabold text-emerald-300">
+              <CheckCircle2 className="h-4 w-4" />
+              Day {dayId} Workout Submitted
+            </div>
+            <p className="mt-0.5 text-xs text-zinc-400">
+              {completedSetsInDay}/{totalSetsInDay} sets • {formatReadableDate(effectiveDateKey)}
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsEditingSubmitted(true)}
+                className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-bold text-zinc-100 active:bg-zinc-800"
+              >
+                <Pencil className="h-3.5 w-3.5 text-amber-400" />
+                Edit Workout
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  db.sessionCompletions.delete(sessionCompletionId);
+                  setIsEditingSubmitted(false);
+                }}
+                className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-950 px-3 text-xs font-semibold text-zinc-400 active:bg-zinc-800"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Unsubmit
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Incomplete Workout Pop-Up Modal */}
+      {showIncompleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+          <div className="animate-panel w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-4 shadow-2xl">
+            <div className="flex items-center gap-2 text-amber-400">
+              <AlertTriangle className="h-5 w-5 shrink-0" />
+              <h3 className="text-base font-extrabold text-zinc-100">
+                Workout Incomplete
+              </h3>
+            </div>
+            <p className="mt-1.5 text-xs text-zinc-400">
+              You didn&apos;t finish all sets for this day:
+            </p>
+
+            <div className="mt-3 max-h-52 space-y-1.5 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-950/70 p-2.5">
+              {resolvedExercises
+                .map((r) => ({
+                  id: r.def.id,
+                  orderLabel: r.def.orderLabel,
+                  name: r.name,
+                  done: weekLogs.filter(
+                    (l) => l.exerciseId === r.def.id && l.completed
+                  ).length,
+                  total: r.setsCount,
+                }))
+                .filter((item) => item.done < item.total)
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between gap-2 text-xs"
+                  >
+                    <span className="truncate text-zinc-200">
+                      <span className="font-bold text-amber-400">
+                        {item.orderLabel}
+                      </span>{' '}
+                      {item.name}
+                    </span>
+                    <span className="shrink-0 font-bold tabular-nums text-zinc-400">
+                      {item.done}/{item.total}
+                    </span>
+                  </div>
+                ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setShowIncompleteModal(false)}
+                className="flex h-11 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 text-xs font-bold text-zinc-100 active:bg-zinc-800"
+              >
+                Continue
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await ensureSessionDate();
+                  await db.sessionCompletions.put({
+                    id: sessionCompletionId,
+                    week,
+                    dayId,
+                    submittedAt: Date.now(),
+                  });
+                  setIsEditingSubmitted(false);
+                  setShowIncompleteModal(false);
+                }}
+                className="flex h-11 items-center justify-center rounded-xl bg-amber-500 text-xs font-extrabold text-zinc-950 active:bg-amber-400"
+              >
+                Submit Anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

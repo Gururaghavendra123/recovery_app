@@ -41,6 +41,13 @@ export interface SessionDate {
   updatedAt: number;
 }
 
+export interface SessionCompletion {
+  id: string; // w{week}_d{dayId}
+  week: number;
+  dayId: number;
+  submittedAt: number;
+}
+
 export interface AppMeta {
   key: string;
   value: string | number;
@@ -51,6 +58,7 @@ class AthleteLogbookDB extends Dexie {
   exerciseFeelings!: Table<ExerciseFeeling, string>;
   warmupChecks!: Table<WarmupCheck, string>;
   sessionDates!: Table<SessionDate, string>;
+  sessionCompletions!: Table<SessionCompletion, string>;
   appMeta!: Table<AppMeta, string>;
 
   constructor() {
@@ -66,6 +74,14 @@ class AthleteLogbookDB extends Dexie {
       exerciseFeelings: 'id, [week+dayId], [week+dayId+exerciseId], updatedAt',
       warmupChecks: 'id, dateKey',
       sessionDates: 'id, dateKey, [week+dayId]',
+      appMeta: 'key',
+    });
+    this.version(3).stores({
+      setLogs: 'id, week, [week+dayId], [week+dayId+exerciseId], exerciseId, updatedAt',
+      exerciseFeelings: 'id, [week+dayId], [week+dayId+exerciseId], updatedAt',
+      warmupChecks: 'id, dateKey',
+      sessionDates: 'id, dateKey, [week+dayId]',
+      sessionCompletions: 'id, week, [week+dayId], submittedAt',
       appMeta: 'key',
     });
   }
@@ -95,6 +111,10 @@ export function makeWarmupId(dateKey: string, warmupId: string): string {
 }
 
 export function makeSessionDateId(week: number, dayId: number): string {
+  return `w${week}_d${dayId}`;
+}
+
+export function makeSessionCompletionId(week: number, dayId: number): string {
   return `w${week}_d${dayId}`;
 }
 
@@ -180,33 +200,42 @@ export function formatCompactSetSummary(
 
 export interface ExportPayload {
   app: 'AestheticAthleteLogbook';
-  version: 1 | 2;
+  version: 1 | 2 | 3;
   exportedAt: string;
   setLogs: SetLog[];
   exerciseFeelings: ExerciseFeeling[];
   warmupChecks: WarmupCheck[];
   sessionDates?: SessionDate[];
+  sessionCompletions?: SessionCompletion[];
   appMeta: AppMeta[];
 }
 
 export async function exportAllDataAsJson(): Promise<string> {
-  const [setLogs, exerciseFeelings, warmupChecks, sessionDates, appMeta] =
-    await Promise.all([
-      db.setLogs.toArray(),
-      db.exerciseFeelings.toArray(),
-      db.warmupChecks.toArray(),
-      db.sessionDates.toArray(),
-      db.appMeta.toArray(),
-    ]);
+  const [
+    setLogs,
+    exerciseFeelings,
+    warmupChecks,
+    sessionDates,
+    sessionCompletions,
+    appMeta,
+  ] = await Promise.all([
+    db.setLogs.toArray(),
+    db.exerciseFeelings.toArray(),
+    db.warmupChecks.toArray(),
+    db.sessionDates.toArray(),
+    db.sessionCompletions.toArray(),
+    db.appMeta.toArray(),
+  ]);
 
   const payload: ExportPayload = {
     app: 'AestheticAthleteLogbook',
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
     setLogs,
     exerciseFeelings,
     warmupChecks,
     sessionDates,
+    sessionCompletions,
     appMeta,
   };
 
@@ -228,11 +257,14 @@ export async function importDataFromJson(
 
   await db.transaction(
     'rw',
-    db.setLogs,
-    db.exerciseFeelings,
-    db.warmupChecks,
-    db.sessionDates,
-    db.appMeta,
+    [
+      db.setLogs,
+      db.exerciseFeelings,
+      db.warmupChecks,
+      db.sessionDates,
+      db.sessionCompletions,
+      db.appMeta,
+    ],
     async () => {
       if (parsed.setLogs && parsed.setLogs.length > 0) {
         await db.setLogs.bulkPut(parsed.setLogs);
@@ -245,6 +277,9 @@ export async function importDataFromJson(
       }
       if (parsed.sessionDates && parsed.sessionDates.length > 0) {
         await db.sessionDates.bulkPut(parsed.sessionDates);
+      }
+      if (parsed.sessionCompletions && parsed.sessionCompletions.length > 0) {
+        await db.sessionCompletions.bulkPut(parsed.sessionCompletions);
       }
       if (parsed.appMeta && parsed.appMeta.length > 0) {
         await db.appMeta.bulkPut(parsed.appMeta);

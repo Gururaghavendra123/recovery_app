@@ -51,8 +51,16 @@ export function CalendarView({
 
   const allSessionDates =
     useLiveQuery(() => db.sessionDates.toArray(), []) ?? [];
+  const allCompletions =
+    useLiveQuery(() => db.sessionCompletions.toArray(), []) ?? [];
   const allSetLogs = useLiveQuery(() => db.setLogs.toArray(), []) ?? [];
   const allWarmups = useLiveQuery(() => db.warmupChecks.toArray(), []) ?? [];
+
+  const submittedKeys = useMemo(() => {
+    const set = new Set<string>();
+    allCompletions.forEach((c) => set.add(`${c.week}_${c.dayId}`));
+    return set;
+  }, [allCompletions]);
 
   // Map dateKey -> SessionDate[]
   const sessionsByDate = useMemo(() => {
@@ -299,7 +307,8 @@ export function CalendarView({
                     const done =
                       progressBySession.get(`${sd.week}_${sd.dayId}`) ?? 0;
                     const total = getTotalSets(sd.week, sd.dayId);
-                    const finished = total > 0 && done >= total;
+                    const isSubmitted = submittedKeys.has(`${sd.week}_${sd.dayId}`);
+                    const finished = isSubmitted || (total > 0 && done >= total);
                     return (
                       <span
                         key={sd.id}
@@ -367,6 +376,7 @@ export function CalendarView({
               const done =
                 progressBySession.get(`${sd.week}_${sd.dayId}`) ?? 0;
               const total = getTotalSets(sd.week, sd.dayId);
+              const isSubmitted = submittedKeys.has(`${sd.week}_${sd.dayId}`);
 
               return (
                 <div
@@ -375,8 +385,13 @@ export function CalendarView({
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-xs font-extrabold text-amber-300">
-                        Week {sd.week} • {dayDef?.shortTitle}
+                      <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-300">
+                        <span>Week {sd.week} • {dayDef?.shortTitle}</span>
+                        {isSubmitted && (
+                          <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-bold text-emerald-300">
+                            Submitted
+                          </span>
+                        )}
                       </div>
                       <div className="mt-0.5 text-[11px] text-zinc-400">
                         {done}/{total} sets logged
