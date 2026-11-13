@@ -12,7 +12,7 @@ export default defineConfig({
       includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'Workout Logger',
-        short_name: 'Workout Logger',
+        short_name: 'Workout',
         description: '16-Week Posture & Hypertrophy Logbook',
         theme_color: '#0a0a0f',
         background_color: '#0a0a0f',
