@@ -121,22 +121,22 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-[#0a0a0f] text-[#c0f0ff]">
       {/* Sticky App Header */}
-      <header className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b-2 border-[#2a2a40] bg-[#0a0a0f]/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
           <div>
-            <h1 className="text-sm font-black uppercase tracking-wider text-zinc-100">
-              Aesthetic <span className="text-amber-400">Athlete</span>
+            <h1 className="pixel-heading text-[10px] text-[#c0f0ff]">
+              Workout <span className="text-[#ff2d95] glow-pink">Logger</span>
             </h1>
-            <p className="text-[10px] font-medium text-zinc-400">
+            <p className="mt-0.5 font-[VT323] text-sm text-[#5a6a78]">
               16-Week Posture & Hypertrophy Logbook
             </p>
           </div>
           <button
             type="button"
             onClick={() => setActiveTab('calendar')}
-            className="rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-[11px] font-bold text-amber-300 tabular-nums active:bg-zinc-800"
+            className="pixel-btn rounded-none px-2.5 py-1.5 text-[9px]"
           >
             W{week} • D{dayId}
           </button>
@@ -184,9 +184,9 @@ export default function App() {
         onDismiss={() => setTimer(null)}
       />
 
-      {/* Bottom Tab Navigation */}
-      <nav className="pb-safe fixed bottom-0 left-0 right-0 z-30 border-t border-zinc-800/90 bg-zinc-950/95 backdrop-blur-md">
-        <div className="mx-auto grid max-w-md grid-cols-5 px-1.5 pt-1.5">
+      {/* Bottom Tab Navigation — 8-bit Cybercore */}
+      <nav className="pb-safe fixed bottom-0 left-0 right-0 z-30 border-t-2 border-[#2a2a40] bg-[#0a0a0f]/95 backdrop-blur-sm">
+        <div className="mx-auto grid max-w-md grid-cols-5 px-1 pt-1.5">
           {TABS.map(({ id, label, Icon }) => {
             const active = activeTab === id;
             return (
@@ -194,22 +194,26 @@ export default function App() {
                 key={id}
                 type="button"
                 onClick={() => setActiveTab(id)}
-                className={`flex flex-col items-center justify-center gap-0.5 rounded-xl py-1 transition-all duration-150 active:scale-95 ${
+                className={`flex flex-col items-center justify-center gap-0.5 py-1.5 transition-all duration-100 active:scale-90 ${
                   active
-                    ? 'text-amber-400'
-                    : 'text-zinc-500 hover:text-zinc-300'
+                    ? 'text-[#00f0ff]'
+                    : 'text-[#5a6a78] hover:text-[#c0f0ff]'
                 }`}
               >
                 <span
-                  className={`flex h-7 w-11 items-center justify-center rounded-full transition-colors duration-150 ${
-                    active ? 'bg-amber-500/15' : 'bg-transparent'
+                  className={`flex h-7 w-11 items-center justify-center transition-colors duration-100 ${
+                    active ? 'bg-[#00f0ff]/10' : 'bg-transparent'
                   }`}
+                  style={{ clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)' }}
                 >
-                  <Icon className={`h-[18px] w-[18px] ${active ? 'stroke-[2.4]' : ''}`} />
+                  <Icon className={`h-[18px] w-[18px] ${active ? 'stroke-[2.4] drop-shadow-[0_0_4px_rgba(0,240,255,0.6)]' : ''}`} />
                 </span>
-                <span className="text-[10px] font-bold tracking-wide">
+                <span className="pixel-label" style={{ fontSize: '7px' }}>
                   {label}
                 </span>
+                {active && (
+                  <span className="mt-0.5 h-[2px] w-5 bg-[#00f0ff] shadow-[0_0_6px_rgba(0,240,255,0.6)]" />
+                )}
               </button>
             );
           })}

@@ -47,16 +47,16 @@ export function SliderInput({
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">
+          <span className="pixel-label text-[#5a6a78]">
             {label}
           </span>
           {subLabel && (
-            <span className="text-[11px] text-zinc-500">{subLabel}</span>
+            <span className="font-[VT323] text-sm text-[#5a6a78]">{subLabel}</span>
           )}
         </div>
         <span
-          className={`text-lg font-bold tabular-nums ${
-            highlightGood ? 'text-emerald-400' : 'text-zinc-100'
+          className={`font-[VT323] text-2xl font-bold tabular-nums ${
+            highlightGood ? 'text-[#39ff14] glow-green' : 'text-[#00f0ff] glow-cyan'
           }`}
         >
           {formatSliderValue(clamped, spec)}
@@ -69,7 +69,8 @@ export function SliderInput({
           onClick={decrement}
           disabled={clamped <= spec.min}
           aria-label={`Decrease ${label}`}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-200 active:scale-95 active:bg-zinc-800 disabled:opacity-35"
+          className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#00f0ff] transition-transform active:translate-x-[1px] active:translate-y-[1px] active:bg-[#1a1a28] disabled:opacity-35"
+          style={{ boxShadow: '3px 3px 0 0 rgba(0,0,0,0.7)' }}
         >
           <Minus className="h-4 w-4" />
         </button>
@@ -84,8 +85,8 @@ export function SliderInput({
           aria-label={label}
           className="gym-slider flex-1"
           style={{
-            background: `linear-gradient(to right, #f59e0b 0%, #f59e0b ${pct}%, #27272a ${pct}%, #27272a 100%)`,
-            borderRadius: '9999px',
+            background: `linear-gradient(to right, #00f0ff 0%, #00f0ff ${pct}%, #2a2a40 ${pct}%, #2a2a40 100%)`,
+            borderRadius: '0',
             height: '10px',
           }}
         />
@@ -95,7 +96,8 @@ export function SliderInput({
           onClick={increment}
           disabled={clamped >= spec.max}
           aria-label={`Increase ${label}`}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-200 active:scale-95 active:bg-zinc-800 disabled:opacity-35"
+          className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#00f0ff] transition-transform active:translate-x-[1px] active:translate-y-[1px] active:bg-[#1a1a28] disabled:opacity-35"
+          style={{ boxShadow: '3px 3px 0 0 rgba(0,0,0,0.7)' }}
         >
           <Plus className="h-4 w-4" />
         </button>
@@ -103,4 +105,3 @@ export function SliderInput({
     </div>
   );
 }
-

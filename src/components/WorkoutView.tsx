@@ -57,19 +57,19 @@ const FEELING_OPTIONS: {
     id: 'easy',
     label: 'Easy',
     activeClass:
-      'border-emerald-500/80 bg-emerald-500/20 text-emerald-300 shadow-[0_0_0_1px_rgba(16,185,129,0.25)]',
+      'border-[#39ff14] bg-[#39ff14]/20 text-[#39ff14] box-glow-green',
   },
   {
     id: 'medium',
     label: 'Medium',
     activeClass:
-      'border-amber-500/80 bg-amber-500/20 text-amber-300 shadow-[0_0_0_1px_rgba(245,158,11,0.25)]',
+      'border-[#ffe600] bg-[#ffe600]/20 text-[#ffe600] box-glow-yellow',
   },
   {
     id: 'hard',
     label: 'Hard',
     activeClass:
-      'border-rose-500/80 bg-rose-500/20 text-rose-300 shadow-[0_0_0_1px_rgba(244,63,94,0.25)]',
+      'border-[#ff2d95] bg-[#ff2d95]/20 text-[#ff2d95] box-glow-pink',
   },
 ];
 
@@ -348,47 +348,46 @@ function ExerciseCard({
 
   return (
     <div
-      className={`rounded-2xl border p-3.5 transition-colors ${
-        allCompleted
-          ? 'border-emerald-500/35 bg-zinc-900/70'
-          : 'border-zinc-800 bg-zinc-900/90'
+      className={`pixel-card p-3.5 transition-colors ${
+        allCompleted ? 'pixel-card-done' : ''
       }`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded-md bg-amber-500/15 px-1.5 py-0.5 text-[11px] font-bold text-amber-400">
+            <span className="pixel-label border border-[#ffe600]/40 bg-[#ffe600]/10 px-1.5 py-0.5 text-[#ffe600]">
               {resolved.def.orderLabel}
             </span>
             {resolved.def.supersetTag && (
-              <span className="rounded-md bg-indigo-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-300">
+              <span className="pixel-label border border-[#8b5cf6]/40 bg-[#8b5cf6]/10 px-1.5 py-0.5 text-[#8b5cf6]">
                 {resolved.def.supersetTag}
               </span>
             )}
-            <span className="text-xs font-medium text-zinc-400">
+            <span className="font-[VT323] text-sm text-[#5a6a78]">
               {resolved.targetText}
             </span>
             {resolved.isDeload && (
-              <span className="rounded-md bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-300">
+              <span className="pixel-label border border-[#ffe600] bg-[#ffe600]/20 px-1.5 py-0.5 text-[#ffe600]">
                 DELOAD -1 set
               </span>
             )}
           </div>
 
-          <h3 className="mt-1 text-base font-bold leading-snug text-zinc-100">
+          <h3 className="mt-1 font-[VT323] text-xl font-bold leading-snug text-[#c0f0ff]">
             {resolved.name}
           </h3>
-          <p className="mt-0.5 text-xs text-zinc-400">{resolved.def.summary}</p>
+          <p className="font-[VT323] text-sm text-[#5a6a78]">{resolved.def.summary}</p>
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5">
           <span
-            className={`rounded-lg px-2 py-1 text-xs font-bold tabular-nums ${
+            className={`border-2 px-2 py-0.5 font-[VT323] text-sm font-bold tabular-nums ${
               allCompleted
-                ? 'bg-emerald-500/20 text-emerald-300'
-                : 'bg-zinc-800 text-zinc-300'
+                ? 'border-[#39ff14] bg-[#39ff14]/15 text-[#39ff14] box-glow-green'
+                : 'border-[#2a2a40] bg-[#111118] text-[#c0f0ff]'
             }`}
+            style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
           >
             {completedCount}/{resolved.setsCount}
           </span>
@@ -396,11 +395,12 @@ function ExerciseCard({
             type="button"
             onClick={() => setShowCue((s) => !s)}
             aria-label="Toggle biomechanical form cue"
-            className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors ${
+            className={`flex h-8 w-8 items-center justify-center border-2 transition-colors ${
               showCue
-                ? 'border-amber-500/50 bg-amber-500/15 text-amber-300'
-                : 'border-zinc-800 bg-zinc-950/60 text-zinc-400'
+                ? 'border-[#00f0ff] bg-[#00f0ff]/15 text-[#00f0ff] box-glow-cyan'
+                : 'border-[#2a2a40] bg-[#111118] text-[#5a6a78]'
             }`}
+            style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
           >
             <Info className="h-4 w-4" />
           </button>
@@ -409,17 +409,17 @@ function ExerciseCard({
 
       {/* Previous week comparison */}
       {week > 1 && prevSummary && (
-        <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-zinc-800/75 px-2 py-0.5 text-[11px] font-medium text-zinc-300">
-          <span className="text-zinc-400">W{week - 1}:</span>
-          <span className="font-bold tabular-nums">{prevSummary}</span>
+        <div className="mt-2 inline-flex items-center gap-1.5 border border-[#2a2a40] bg-[#111118] px-2 py-0.5 font-[VT323] text-xs text-[#c0f0ff]">
+          <span className="text-[#5a6a78]">W{week - 1}:</span>
+          <span className="font-bold text-[#00f0ff] tabular-nums">{prevSummary}</span>
           {prevFeeling && (
             <span
               className={`capitalize font-semibold ${
                 prevFeeling === 'easy'
-                  ? 'text-emerald-300'
+                  ? 'text-[#39ff14]'
                   : prevFeeling === 'medium'
-                  ? 'text-amber-300'
-                  : 'text-rose-300'
+                  ? 'text-[#ffe600]'
+                  : 'text-[#ff2d95]'
               }`}
             >
               • {prevFeeling}
@@ -430,7 +430,7 @@ function ExerciseCard({
 
       {/* Expandable PDF Form Cue */}
       {showCue && (
-        <div className="animate-panel mt-2.5 rounded-xl border border-amber-500/25 bg-amber-500/5 px-2.5 py-2 text-xs leading-relaxed text-zinc-200">
+        <div className="animate-panel mt-2.5 border-2 border-[#ffe600]/40 bg-[#ffe600]/5 p-2 font-[VT323] text-sm leading-relaxed text-[#c0f0ff]">
           {resolved.cue}
         </div>
       )}
@@ -438,7 +438,7 @@ function ExerciseCard({
       {/* Set Category Header + Start / Edit Action + Chips */}
       <div className="mt-3 space-y-2">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+          <span className="pixel-label text-[#5a6a78]">
             Sets
           </span>
 
@@ -447,7 +447,7 @@ function ExerciseCard({
               <button
                 type="button"
                 onClick={handleStartExercise}
-                className="flex items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1 text-[11px] font-extrabold text-zinc-950 transition-transform active:scale-95 active:bg-amber-400"
+                className="pixel-btn-solid flex items-center gap-1 px-2.5 py-1"
               >
                 <Play className="h-3 w-3 fill-current" />
                 {completedCount === 0
@@ -458,7 +458,7 @@ function ExerciseCard({
               <button
                 type="button"
                 onClick={handleStartExercise}
-                className="flex items-center gap-1 rounded-lg border border-zinc-700/80 bg-zinc-950 px-2.5 py-1 text-[11px] font-semibold text-zinc-300 transition-transform active:scale-95 active:bg-zinc-800"
+                className="pixel-btn flex items-center gap-1 px-2.5 py-1 text-[#c0f0ff]"
               >
                 <Pencil className="h-3 w-3" />
                 Edit Sets
@@ -470,7 +470,7 @@ function ExerciseCard({
             <button
               type="button"
               onClick={handleStartExercise}
-              className="flex items-center gap-1 rounded-lg border border-zinc-700/80 bg-zinc-950 px-2.5 py-1 text-[11px] font-semibold text-zinc-300 transition-transform active:scale-95 active:bg-zinc-800"
+              className="pixel-btn flex items-center gap-1 px-2.5 py-1 text-[#c0f0ff]"
             >
               <Pencil className="h-3 w-3" />
               Edit
@@ -490,23 +490,24 @@ function ExerciseCard({
                 key={label}
                 type="button"
                 onClick={() => openSet(idx)}
-                className={`flex min-h-[34px] items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-semibold transition-all duration-150 active:scale-95 ${
+                className={`flex min-h-[34px] items-center gap-1 border-2 px-2.5 py-1 font-[VT323] text-sm font-semibold transition-all duration-100 active:scale-95 ${
                   isActive
-                    ? 'border-amber-400 bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/50'
+                    ? 'border-[#00f0ff] bg-[#00f0ff]/20 text-[#00f0ff] box-glow-cyan'
                     : isDone
-                    ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-200'
-                    : 'border-zinc-800 bg-zinc-950/70 text-zinc-300'
+                    ? 'border-[#39ff14]/60 bg-[#39ff14]/15 text-[#39ff14]'
+                    : 'border-[#2a2a40] bg-[#111118] text-[#c0f0ff]'
                 }`}
+                style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
               >
-                {isDone && <Check className="h-3.5 w-3.5 text-emerald-400" />}
+                {isDone && <Check className="h-3.5 w-3.5 text-[#39ff14]" />}
                 <span>{label}</span>
                 {isDone && summary && (
-                  <span className="font-bold tabular-nums text-emerald-300">
+                  <span className="font-bold tabular-nums text-[#39ff14]">
                     • {summary}
                   </span>
                 )}
                 {!isDone && firstPendingIndex === idx && !isActive && (
-                  <ChevronDown className="h-3 w-3 text-amber-400" />
+                  <ChevronDown className="h-3 w-3 text-[#ffe600]" />
                 )}
               </button>
             );
@@ -516,9 +517,9 @@ function ExerciseCard({
 
       {/* Inline Slider Logger for active set */}
       {!isSubmittedLocked && activeSetIndex !== null && (
-        <div className="animate-panel mt-3 space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/90 p-3">
+        <div className="animate-panel mt-3 space-y-3 border-2 border-[#00f0ff]/50 bg-[#0e0e16] p-3 box-glow-cyan">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+            <span className="pixel-label text-[#00f0ff] glow-cyan">
               Logging {resolved.setLabels[activeSetIndex]}
             </span>
             <div className="flex items-center gap-2">
@@ -526,7 +527,7 @@ function ExerciseCard({
                 <button
                   type="button"
                   onClick={() => handleClearSet(activeSetIndex)}
-                  className="flex items-center gap-1 rounded-lg border border-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-400 active:bg-zinc-800"
+                  className="pixel-btn flex items-center gap-1 border-[#2a2a40] px-2 py-1 text-[8px] text-[#5a6a78]"
                 >
                   <RotateCcw className="h-3 w-3" />
                   Clear
@@ -536,7 +537,7 @@ function ExerciseCard({
                 type="button"
                 onClick={() => setActiveSetIndex(null)}
                 aria-label="Collapse set logger"
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800"
+                className="flex h-7 w-7 items-center justify-center border border-[#2a2a40] bg-[#111118] text-[#5a6a78] hover:text-[#00f0ff]"
               >
                 <ChevronUp className="h-4 w-4" />
               </button>
@@ -594,7 +595,7 @@ function ExerciseCard({
             <button
               type="button"
               onClick={handleLogSet}
-              className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-amber-500 text-sm font-bold text-zinc-950 shadow-lg active:scale-[0.99] active:bg-amber-400"
+              className="pixel-btn-solid flex h-11 flex-1 items-center justify-center gap-2 text-xs"
             >
               <Check className="h-4 w-4 stroke-[2.5]" />
               {logsByIndex.get(activeSetIndex)?.completed
@@ -608,9 +609,9 @@ function ExerciseCard({
                   onStartTimer(`${resolved.name} Rest`, resolved.def.restSeconds)
                 }
                 aria-label="Start rest timer"
-                className="flex h-11 items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 px-3 text-xs font-semibold text-zinc-200 active:bg-zinc-800"
+                className="pixel-btn flex h-11 items-center gap-1.5 px-3 text-[9px]"
               >
-                <Timer className="h-4 w-4 text-amber-400" />
+                <Timer className="h-4 w-4 text-[#00f0ff]" />
                 {resolved.def.restSeconds}s
               </button>
             )}
@@ -619,11 +620,11 @@ function ExerciseCard({
       )}
 
       {/* Effort / Feeling Selector: Easy | Medium | Hard */}
-      <div className="mt-3 flex items-center justify-between gap-2 border-t border-zinc-800/70 pt-2.5">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+      <div className="mt-3 flex items-center justify-between gap-2 border-t-2 border-[#2a2a40] pt-2.5">
+        <span className="pixel-label text-[#5a6a78]">
           Feeling
         </span>
-        <div className="inline-flex rounded-xl border border-zinc-800/90 bg-zinc-950/80 p-0.5">
+        <div className="inline-flex border-2 border-[#2a2a40] bg-[#0a0a0f] p-0.5">
           {FEELING_OPTIONS.map((opt) => {
             const active = currentFeeling === opt.id;
             return (
@@ -631,10 +632,10 @@ function ExerciseCard({
                 key={opt.id}
                 type="button"
                 onClick={() => handleSelectFeeling(opt.id)}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all duration-150 active:scale-95 ${
+                className={`border px-2.5 py-1 font-[VT323] text-sm font-semibold transition-all duration-100 active:scale-95 ${
                   active
                     ? opt.activeClass
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    : 'border-transparent text-[#5a6a78] hover:text-[#c0f0ff]'
                 }`}
               >
                 {opt.label}
@@ -789,14 +790,15 @@ export function WorkoutView({
   return (
     <div className="space-y-3.5 pb-4">
       {/* Week & Auto-Rest Header */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-3">
+      <div className="pixel-card p-3">
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
             onClick={() => onChangeWeek(Math.max(1, week - 1))}
             disabled={week <= 1}
             aria-label="Previous week"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-200 active:bg-zinc-800 disabled:opacity-35"
+            className="flex h-9 w-9 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#c0f0ff] active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-35"
+            style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.7)' }}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -804,25 +806,25 @@ export function WorkoutView({
           <button
             type="button"
             onClick={() => setShowWeekPicker((v) => !v)}
-            className="flex flex-1 flex-col items-center justify-center rounded-xl py-1 active:bg-zinc-800/50"
+            className="flex flex-1 flex-col items-center justify-center py-1 active:bg-[#1a1a28]"
           >
             <div className="flex items-center gap-2">
-              <span className="text-base font-extrabold tracking-tight text-zinc-100">
-                Week {week} <span className="text-zinc-500">/ 16</span>
+              <span className="pixel-heading text-xs text-[#c0f0ff]">
+                Week {week} <span className="text-[#5a6a78]">/ 16</span>
               </span>
               {deload && (
-                <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-300">
+                <span className="pixel-label border border-[#ffe600] bg-[#ffe600]/20 px-1.5 py-0.5 text-[#ffe600]">
                   Deload
                 </span>
               )}
               <ChevronDown
-                className={`h-3.5 w-3.5 text-zinc-400 transition-transform ${
+                className={`h-3.5 w-3.5 text-[#5a6a78] transition-transform ${
                   showWeekPicker ? 'rotate-180' : ''
                 }`}
               />
             </div>
-            <span className="text-[11px] font-medium text-zinc-400">
-              {week <= 8 ? 'Block 1 (Weeks 1–8)' : 'Block 2 (Weeks 9–16)'} •{' '}
+            <span className="font-[VT323] text-sm text-[#5a6a78]">
+              {week <= 8 ? 'Block 1 (W1–8)' : 'Block 2 (W9–16)'} •{' '}
               {ATHLETE_PROFILE.targetRir}
             </span>
           </button>
@@ -832,7 +834,8 @@ export function WorkoutView({
             onClick={() => onChangeWeek(Math.min(16, week + 1))}
             disabled={week >= 16}
             aria-label="Next week"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-200 active:bg-zinc-800 disabled:opacity-35"
+            className="flex h-9 w-9 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#c0f0ff] active:translate-x-[1px] active:translate-y-[1px] disabled:opacity-35"
+            style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.7)' }}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -840,7 +843,7 @@ export function WorkoutView({
 
         {/* Inline 16-week grid picker */}
         {showWeekPicker && (
-          <div className="animate-panel mt-3 grid grid-cols-8 gap-1.5 border-t border-zinc-800 pt-3">
+          <div className="animate-panel mt-3 grid grid-cols-8 gap-1 border-t-2 border-[#2a2a40] pt-3">
             {Array.from({ length: 16 }, (_, i) => i + 1).map((w) => {
               const isSelected = w === week;
               const isDl = isDeloadWeek(w);
@@ -852,12 +855,12 @@ export function WorkoutView({
                     onChangeWeek(w);
                     setShowWeekPicker(false);
                   }}
-                  className={`rounded-lg border py-1.5 text-xs font-bold tabular-nums transition-colors ${
+                  className={`border py-1 font-[VT323] text-sm font-bold tabular-nums transition-colors ${
                     isSelected
-                      ? 'border-amber-400 bg-amber-500 text-zinc-950'
+                      ? 'border-[#00f0ff] bg-[#00f0ff] text-[#0a0a0f] box-glow-cyan'
                       : isDl
-                      ? 'border-amber-500/40 bg-amber-500/10 text-amber-300'
-                      : 'border-zinc-800 bg-zinc-950 text-zinc-300'
+                      ? 'border-[#ffe600]/60 bg-[#ffe600]/15 text-[#ffe600]'
+                      : 'border-[#2a2a40] bg-[#111118] text-[#c0f0ff]'
                   }`}
                 >
                   W{w}
@@ -890,22 +893,23 @@ export function WorkoutView({
                 key={d.id}
                 type="button"
                 onClick={() => onChangeDayId(d.id)}
-                className={`flex flex-col items-center rounded-xl border px-1.5 py-2 text-center transition-all active:scale-95 ${
+                className={`flex flex-col items-center border-2 px-1 py-1.5 text-center transition-all active:scale-95 ${
                   active
-                    ? 'border-amber-500/70 bg-amber-500/15 text-amber-200'
+                    ? 'border-[#00f0ff] bg-[#00f0ff]/15 text-[#00f0ff] box-glow-cyan'
                     : dayFinished
-                    ? 'border-emerald-500/35 bg-emerald-500/10 text-emerald-300'
-                    : 'border-zinc-800 bg-zinc-950/70 text-zinc-400'
+                    ? 'border-[#39ff14]/50 bg-[#39ff14]/10 text-[#39ff14]'
+                    : 'border-[#2a2a40] bg-[#111118] text-[#5a6a78]'
                 }`}
+                style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
               >
-                <span className="flex items-center gap-0.5 text-[11px] font-bold uppercase tracking-wide">
+                <span className="flex items-center gap-0.5 pixel-label text-[8px]">
                   {d.dayName}
-                  {daySubmitted && <Check className="h-3 w-3 text-emerald-400" />}
+                  {daySubmitted && <Check className="h-3 w-3 text-[#39ff14]" />}
                 </span>
-                <span className="mt-0.5 text-[10px] font-medium leading-tight opacity-85">
+                <span className="mt-0.5 font-[VT323] text-xs leading-tight opacity-85">
                   {splitName}
                 </span>
-                <span className="mt-1 text-[10px] font-bold tabular-nums opacity-80">
+                <span className="mt-0.5 font-[VT323] text-xs tabular-nums opacity-80">
                   {matchedDate
                     ? formatShortDayMonth(matchedDate)
                     : `${dayDone}/${dayTotal}`}
@@ -916,12 +920,12 @@ export function WorkoutView({
         </div>
 
         {/* Matched Gym Date Selector Bar */}
-        <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl border border-zinc-800/80 bg-zinc-950/75 px-2.5 py-1.5">
+        <div className="mt-2.5 flex items-center justify-between gap-2 border-2 border-[#2a2a40] bg-[#0a0a0f] px-2.5 py-1.5">
           <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+            <div className="pixel-label text-[8px] text-[#5a6a78]">
               {sessionDateRecord ? 'Gym Date' : 'Gym Date (Auto)'}
             </div>
-            <div className="truncate text-xs font-bold text-zinc-200">
+            <div className="truncate font-[VT323] text-sm font-bold text-[#c0f0ff]">
               {formatReadableDate(effectiveDateKey)}
               {effectiveDateKey === todayKey ? ' • Today' : ''}
             </div>
@@ -933,28 +937,28 @@ export function WorkoutView({
               value={effectiveDateKey}
               onChange={(e) => handleSetSessionDate(e.target.value)}
               aria-label="Choose gym date"
-              className="rounded-lg border border-zinc-700/80 bg-zinc-900 px-2 py-1 text-[11px] font-semibold text-amber-300"
+              className="border-2 border-[#2a2a40] bg-[#111118] px-2 py-0.5 font-[VT323] text-xs font-semibold text-[#00f0ff]"
             />
             <button
               type="button"
               onClick={onOpenCalendar}
               aria-label="Open Calendar"
-              className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-700/80 bg-zinc-900 text-zinc-300 transition-transform active:scale-95 active:bg-zinc-800"
+              className="flex h-7 w-7 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#00f0ff] active:bg-[#1a1a28]"
             >
-              <CalendarDays className="h-3.5 w-3.5 text-amber-400" />
+              <CalendarDays className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
       </div>
 
       {/* Day Header & Session Status */}
-      <div className="rounded-2xl border border-zinc-800/90 bg-zinc-900/60 px-3.5 py-2.5">
+      <div className="pixel-card p-3">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <h2 className="text-sm font-extrabold text-zinc-100">
+            <h2 className="font-[VT323] text-xl font-bold text-[#c0f0ff]">
               {dayDef.shortTitle} — {dayDef.title}
             </h2>
-            <p className="mt-0.5 text-[11px] font-medium text-zinc-400">
+            <p className="font-[VT323] text-sm text-[#5a6a78]">
               {dayDef.focus}
             </p>
           </div>
@@ -962,10 +966,10 @@ export function WorkoutView({
           <button
             type="button"
             onClick={() => setAutoStartRest((v) => !v)}
-            className={`flex shrink-0 items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-semibold transition-colors ${
+            className={`pixel-btn flex shrink-0 items-center gap-1 px-2 py-1 text-[8px] ${
               autoStartRest
-                ? 'border-amber-500/40 bg-amber-500/15 text-amber-300'
-                : 'border-zinc-800 bg-zinc-950 text-zinc-500'
+                ? 'border-[#00f0ff] text-[#00f0ff]'
+                : 'border-[#2a2a40] text-[#5a6a78]'
             }`}
           >
             <Timer className="h-3 w-3" />
@@ -973,20 +977,21 @@ export function WorkoutView({
           </button>
         </div>
 
-        <div className="mt-2 flex items-center gap-2.5">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-800">
+        <div className="mt-2.5 flex items-center gap-2.5">
+          <div className="h-2 flex-1 overflow-hidden border border-[#2a2a40] bg-[#0a0a0f]">
             <div
-              className="h-full rounded-full bg-amber-500 transition-all duration-300"
+              className="h-full bg-[#00f0ff] transition-all duration-300"
               style={{
                 width: `${
                   totalSetsInDay > 0
                     ? Math.round((completedSetsInDay / totalSetsInDay) * 100)
                     : 0
                 }%`,
+                boxShadow: '0 0 8px rgba(0,240,255,0.4)',
               }}
             />
           </div>
-          <span className="shrink-0 text-[11px] font-bold tabular-nums text-zinc-300">
+          <span className="shrink-0 font-[VT323] text-sm font-bold tabular-nums text-[#00f0ff]">
             {completedSetsInDay}/{totalSetsInDay} sets
           </span>
         </div>
@@ -994,18 +999,18 @@ export function WorkoutView({
 
       {/* Deload Banner */}
       {deload && (
-        <div className="flex items-center gap-2 rounded-2xl border border-amber-500/35 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
-          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" />
-          <span>
-            <strong className="text-amber-300">W{week} Deload:</strong> -15% weight, -1 set.
+        <div className="pixel-card flex items-center gap-2 border-[#ffe600] bg-[#ffe600]/10 p-2.5 text-xs text-[#ffe600] box-glow-yellow">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-[#ffe600]" />
+          <span className="font-[VT323] text-sm">
+            <strong className="text-[#ffe600]">W{week} Deload:</strong> -15% weight, -1 set.
           </span>
         </div>
       )}
 
       {/* Day-Specific Rule Banner */}
       {dayDef.ruleTitle && dayDef.ruleText && (
-        <div className="rounded-2xl border border-orange-500/30 bg-orange-950/25 px-3 py-2 text-xs leading-relaxed text-orange-100/90">
-          <span className="font-extrabold uppercase tracking-wide text-orange-400">
+        <div className="pixel-card border-[#ff8c00] bg-[#ff8c00]/10 p-2.5 font-[VT323] text-sm leading-relaxed text-[#c0f0ff]">
+          <span className="font-extrabold uppercase tracking-wide text-[#ff8c00]">
             {dayDef.ruleTitle}:{' '}
           </span>
           {dayDef.ruleText}
@@ -1014,12 +1019,12 @@ export function WorkoutView({
 
       {/* Submitted Status Top Banner */}
       {isSubmittedLocked && (
-        <div className="animate-panel flex items-center justify-between gap-2 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-2.5 text-xs">
-          <div className="flex items-center gap-2 text-emerald-200">
-            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
-            <div>
+        <div className="animate-panel pixel-card flex items-center justify-between gap-2 border-[#39ff14] bg-[#39ff14]/10 p-2.5 text-xs box-glow-green">
+          <div className="flex items-center gap-2 text-[#39ff14]">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-[#39ff14]" />
+            <div className="font-[VT323] text-base">
               <span className="font-bold">Day {dayId} Submitted</span>
-              <span className="text-emerald-300/80">
+              <span className="text-[#39ff14]/80">
                 {' '}• {completedSetsInDay}/{totalSetsInDay} sets
               </span>
             </div>
@@ -1027,7 +1032,7 @@ export function WorkoutView({
           <button
             type="button"
             onClick={() => setIsEditingSubmitted(true)}
-            className="flex items-center gap-1 rounded-lg border border-emerald-500/40 bg-emerald-950/60 px-2.5 py-1 font-bold text-emerald-200 active:scale-95"
+            className="pixel-btn flex items-center gap-1 border-[#39ff14] px-2.5 py-1 text-[#39ff14]"
           >
             <Pencil className="h-3 w-3" />
             Edit
@@ -1105,7 +1110,7 @@ export function WorkoutView({
                   );
                 }
               }}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 text-sm font-extrabold text-zinc-950 shadow-lg transition-transform active:scale-[0.99] active:bg-emerald-400"
+              className="pixel-btn-solid flex h-12 w-full items-center justify-center gap-2 text-xs"
             >
               <CheckCircle2 className="h-5 w-5 stroke-[2.4]" />
               {completionRecord ? `Save & Finish Day ${dayId}` : `Finish Day ${dayId}`}
@@ -1115,28 +1120,28 @@ export function WorkoutView({
               <button
                 type="button"
                 onClick={() => setIsEditingSubmitted(false)}
-                className="flex h-10 w-full items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-bold text-zinc-300 active:bg-zinc-800"
+                className="pixel-btn flex h-10 w-full items-center justify-center text-[9px] text-[#c0f0ff]"
               >
                 Done Editing
               </button>
             )}
           </div>
         ) : (
-          <div className="rounded-2xl border border-emerald-500/35 bg-emerald-950/20 p-3.5 text-center">
-            <div className="flex items-center justify-center gap-1.5 text-sm font-extrabold text-emerald-300">
+          <div className="pixel-card border-[#39ff14] bg-[#39ff14]/10 p-3.5 text-center box-glow-green">
+            <div className="flex items-center justify-center gap-1.5 font-[VT323] text-lg font-bold text-[#39ff14]">
               <CheckCircle2 className="h-4 w-4" />
               Day {dayId} Workout Submitted
             </div>
-            <p className="mt-0.5 text-xs text-zinc-400">
+            <p className="mt-0.5 font-[VT323] text-sm text-[#5a6a78]">
               {completedSetsInDay}/{totalSetsInDay} sets • {formatReadableDate(effectiveDateKey)}
             </p>
             <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setIsEditingSubmitted(true)}
-                className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-bold text-zinc-100 active:bg-zinc-800"
+                className="pixel-btn flex h-10 flex-1 items-center justify-center gap-1.5 text-[9px] text-[#00f0ff]"
               >
-                <Pencil className="h-3.5 w-3.5 text-amber-400" />
+                <Pencil className="h-3.5 w-3.5 text-[#00f0ff]" />
                 Edit Workout
               </button>
               <button
@@ -1145,7 +1150,7 @@ export function WorkoutView({
                   db.sessionCompletions.delete(sessionCompletionId);
                   setIsEditingSubmitted(false);
                 }}
-                className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-950 px-3 text-xs font-semibold text-zinc-400 active:bg-zinc-800"
+                className="pixel-btn flex h-10 items-center justify-center gap-1.5 border-[#2a2a40] px-3 text-[9px] text-[#5a6a78]"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 Unsubmit
@@ -1157,19 +1162,19 @@ export function WorkoutView({
 
       {/* Incomplete Workout Pop-Up Modal */}
       {showIncompleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-          <div className="animate-panel w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-4 shadow-2xl">
-            <div className="flex items-center gap-2 text-amber-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <div className="animate-panel pixel-card w-full max-w-sm border-[#ff2d95] p-4 box-glow-pink">
+            <div className="flex items-center gap-2 text-[#ff2d95]">
               <AlertTriangle className="h-5 w-5 shrink-0" />
-              <h3 className="text-base font-extrabold text-zinc-100">
+              <h3 className="pixel-heading text-xs text-[#ff2d95]">
                 Workout Incomplete
               </h3>
             </div>
-            <p className="mt-1.5 text-xs text-zinc-400">
+            <p className="mt-1.5 font-[VT323] text-base text-[#5a6a78]">
               You didn&apos;t finish all sets for this day:
             </p>
 
-            <div className="mt-3 max-h-52 space-y-1.5 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-950/70 p-2.5">
+            <div className="mt-3 max-h-52 space-y-1.5 overflow-y-auto border-2 border-[#2a2a40] bg-[#0a0a0f] p-2.5">
               {resolvedExercises
                 .map((r) => ({
                   id: r.def.id,
@@ -1184,15 +1189,15 @@ export function WorkoutView({
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between gap-2 text-xs"
+                    className="flex items-center justify-between gap-2 font-[VT323] text-sm"
                   >
-                    <span className="truncate text-zinc-200">
-                      <span className="font-bold text-amber-400">
+                    <span className="truncate text-[#c0f0ff]">
+                      <span className="font-bold text-[#ffe600]">
                         {item.orderLabel}
                       </span>{' '}
                       {item.name}
                     </span>
-                    <span className="shrink-0 font-bold tabular-nums text-zinc-400">
+                    <span className="shrink-0 font-bold tabular-nums text-[#ff2d95]">
                       {item.done}/{item.total}
                     </span>
                   </div>
@@ -1203,9 +1208,9 @@ export function WorkoutView({
               <button
                 type="button"
                 onClick={() => setShowIncompleteModal(false)}
-                className="flex h-11 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 text-xs font-bold text-zinc-100 active:bg-zinc-800"
+                className="pixel-btn h-11 text-[9px] text-[#c0f0ff]"
               >
-                Continue
+                Keep Going
               </button>
               <button
                 type="button"
@@ -1220,9 +1225,9 @@ export function WorkoutView({
                   setIsEditingSubmitted(false);
                   setShowIncompleteModal(false);
                 }}
-                className="flex h-11 items-center justify-center rounded-xl bg-amber-500 text-xs font-extrabold text-zinc-950 active:bg-amber-400"
+                className="pixel-btn-solid h-11 text-[9px]"
               >
-                Submit Anyway
+                Finish Anyway
               </button>
             </div>
           </div>
@@ -1231,4 +1236,3 @@ export function WorkoutView({
     </div>
   );
 }
-

@@ -25,9 +25,9 @@ const WEEK_PAIRS = Array.from({ length: 8 }, (_, idx) => ({
 }));
 
 function feelingDotClass(feeling?: Feeling): string {
-  if (feeling === 'easy') return 'bg-emerald-400';
-  if (feeling === 'medium') return 'bg-amber-400';
-  if (feeling === 'hard') return 'bg-rose-400';
+  if (feeling === 'easy') return 'bg-[#39ff14] shadow-[0_0_4px_#39ff14]';
+  if (feeling === 'medium') return 'bg-[#ffe600] shadow-[0_0_4px_#ffe600]';
+  if (feeling === 'hard') return 'bg-[#ff2d95] shadow-[0_0_4px_#ff2d95]';
   return '';
 }
 
@@ -99,7 +99,7 @@ export function LogbookView({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `aesthetic-athlete-logbook-${getTodayDateKey()}.json`;
+      a.download = `workout-logger-${getTodayDateKey()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -121,7 +121,7 @@ export function LogbookView({
       const text = await file.text();
       const res = await importDataFromJson(text);
       setStatusMsg(
-        `Imported ${res.setsImported} sets & ${res.feelingsImported} exercise ratings.`
+        `Imported ${res.setsImported} sets & ${res.feelingsImported} ratings.`
       );
     } catch (err) {
       setStatusMsg(
@@ -135,14 +135,14 @@ export function LogbookView({
   return (
     <div className="space-y-3.5 pb-4">
       {/* Backup / JSON Export & Import */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-3.5">
+      <div className="pixel-card p-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-extrabold text-zinc-100">
-              16-Week Split-Cell Logbook
+            <h2 className="pixel-heading text-xs text-[#00f0ff] glow-cyan">
+              16-Week Logbook
             </h2>
-            <p className="text-[11px] text-zinc-400">
-              W1–8 top / W9–16 bottom • Tap any cell to edit
+            <p className="mt-0.5 font-[VT323] text-sm text-[#5a6a78]">
+              W1–8 top / W9–16 bottom • Tap cell to edit
             </p>
           </div>
 
@@ -150,17 +150,17 @@ export function LogbookView({
             <button
               type="button"
               onClick={handleExportJson}
-              className="flex items-center gap-1.5 rounded-xl bg-amber-500 px-3 py-2 text-xs font-bold text-zinc-950 active:bg-amber-400"
+              className="pixel-btn-solid flex items-center gap-1 px-2.5 py-1.5 text-[8px]"
             >
-              <Download className="h-3.5 w-3.5" />
-              Export JSON
+              <Download className="h-3 w-3" />
+              Export
             </button>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs font-semibold text-zinc-200 active:bg-zinc-800"
+              className="pixel-btn flex items-center gap-1 px-2.5 py-1.5 text-[8px] text-[#c0f0ff]"
             >
-              <Upload className="h-3.5 w-3.5" />
+              <Upload className="h-3 w-3" />
               Import
             </button>
             <input
@@ -174,7 +174,7 @@ export function LogbookView({
         </div>
 
         {statusMsg && (
-          <div className="mt-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
+          <div className="mt-2.5 border-2 border-[#39ff14] bg-[#39ff14]/10 p-2 font-[VT323] text-sm text-[#39ff14]">
             {statusMsg}
           </div>
         )}
@@ -188,11 +188,12 @@ export function LogbookView({
                 key={d.id}
                 type="button"
                 onClick={() => setDayId(d.id)}
-                className={`rounded-xl border py-1.5 text-[11px] font-bold transition-colors ${
+                className={`border-2 py-1 font-[VT323] text-sm font-bold transition-colors ${
                   d.id === dayId
-                    ? 'border-amber-500/70 bg-amber-500/15 text-amber-200'
-                    : 'border-zinc-800 bg-zinc-950 text-zinc-400'
+                    ? 'border-[#00f0ff] bg-[#00f0ff]/20 text-[#00f0ff] box-glow-cyan'
+                    : 'border-[#2a2a40] bg-[#111118] text-[#5a6a78]'
                 }`}
+                style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
               >
                 {d.dayName} • {splitName}
               </button>
@@ -202,44 +203,44 @@ export function LogbookView({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-between px-1 text-[11px] text-zinc-400">
-        <span>Top: Weeks 1–8 | Bottom: Weeks 9–16</span>
+      <div className="flex items-center justify-between px-1 font-[VT323] text-xs text-[#5a6a78]">
+        <span>Top: W1–8 | Bottom: W9–16</span>
         <div className="flex items-center gap-2.5">
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" /> Easy
+            <span className="h-2 w-2 bg-[#39ff14]" /> Easy
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-amber-400" /> Med
+            <span className="h-2 w-2 bg-[#ffe600]" /> Med
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-rose-400" /> Hard
+            <span className="h-2 w-2 bg-[#ff2d95]" /> Hard
           </span>
         </div>
       </div>
 
-      {/* Horizontal-scroll split-cell log matrix matching PDF */}
-      <div className="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-900/90">
-        <table className="w-full min-w-[640px] border-collapse text-left text-xs">
+      {/* Horizontal-scroll split-cell log matrix */}
+      <div className="overflow-x-auto border-2 border-[#2a2a40] bg-[#111118]" style={{ boxShadow: '4px 4px 0 0 rgba(0,0,0,0.7)' }}>
+        <table className="w-full min-w-[640px] border-collapse text-left font-[VT323] text-sm">
           <thead>
-            <tr className="border-b border-zinc-800 bg-zinc-950 text-[10px] font-bold uppercase tracking-wider text-zinc-300">
-              <th className="sticky left-0 z-10 min-w-[140px] border-r border-zinc-800 bg-zinc-950 px-3 py-2.5">
+            <tr className="border-b-2 border-[#2a2a40] bg-[#0a0a0f] pixel-label text-[8px] text-[#5a6a78]">
+              <th className="sticky left-0 z-10 min-w-[140px] border-r-2 border-[#2a2a40] bg-[#0a0a0f] px-3 py-2">
                 Exercise
               </th>
               {WEEK_PAIRS.map((pair) => (
                 <th
                   key={pair.topWeek}
-                  className="min-w-[60px] border-r border-zinc-800/70 px-1.5 py-2 text-center last:border-r-0"
+                  className="min-w-[60px] border-r border-[#2a2a40] px-1 py-1.5 text-center last:border-r-0"
                 >
-                  <div>W{pair.topWeek} /</div>
-                  <div className="text-zinc-400">W{pair.bottomWeek}</div>
+                  <div className="text-[#00f0ff]">W{pair.topWeek}</div>
+                  <div className="text-[#5a6a78]">W{pair.bottomWeek}</div>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800/80">
+          <tbody className="divide-y divide-[#2a2a40]">
             {/* Matched Gym Dates Row */}
-            <tr className="bg-zinc-950/60">
-              <td className="sticky left-0 z-10 border-r border-zinc-800 bg-zinc-950 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-400">
+            <tr className="bg-[#0a0a0f]/80">
+              <td className="sticky left-0 z-10 border-r-2 border-[#2a2a40] bg-[#0a0a0f] px-3 py-1 pixel-label text-[8px] text-[#ffe600]">
                 Gym Date
               </td>
               {WEEK_PAIRS.map((pair) => {
@@ -252,12 +253,12 @@ export function LogbookView({
                 return (
                   <td
                     key={`date-${pair.topWeek}`}
-                    className="border-r border-zinc-800/70 p-0 text-center text-[9px] font-semibold last:border-r-0"
+                    className="border-r border-[#2a2a40] p-0 text-center font-[VT323] text-xs last:border-r-0"
                   >
-                    <div className="border-b border-zinc-800/60 py-1 text-zinc-300">
+                    <div className="border-b border-[#2a2a40] py-0.5 text-[#c0f0ff]">
                       {topDate ? formatShortDayMonth(topDate) : '—'}
                     </div>
-                    <div className="py-1 text-zinc-400">
+                    <div className="py-0.5 text-[#5a6a78]">
                       {botDate ? formatShortDayMonth(botDate) : '—'}
                     </div>
                   </td>
@@ -265,10 +266,10 @@ export function LogbookView({
               })}
             </tr>
             {dayDef.exercises.map((ex) => (
-              <tr key={ex.id} className="hover:bg-zinc-800/25">
-                <td className="sticky left-0 z-10 border-r border-zinc-800 bg-zinc-900 px-3 py-2 align-middle">
-                  <div className="font-bold text-zinc-100">{ex.tableName}</div>
-                  <div className="text-[10px] text-amber-400/90">
+              <tr key={ex.id} className="hover:bg-[#1a1a28]">
+                <td className="sticky left-0 z-10 border-r-2 border-[#2a2a40] bg-[#111118] px-3 py-1.5 align-middle">
+                  <div className="font-[VT323] text-base font-bold text-[#c0f0ff]">{ex.tableName}</div>
+                  <div className="font-[VT323] text-xs text-[#00f0ff]/80">
                     {ex.targetText}
                   </div>
                 </td>
@@ -295,27 +296,27 @@ export function LogbookView({
                   return (
                     <td
                       key={pair.topWeek}
-                      className="border-r border-zinc-800/70 p-0 align-top last:border-r-0"
+                      className="border-r border-[#2a2a40] p-0 align-top last:border-r-0"
                     >
                       <button
                         type="button"
                         onClick={() => onJumpToSession(pair.topWeek, dayId)}
-                        className={`flex h-8 w-full items-center justify-between border-b border-zinc-800/60 px-1.5 text-[10px] tabular-nums hover:bg-zinc-800/60 ${
-                          pair.topWeek === 8 ? 'bg-amber-500/5' : ''
+                        className={`flex h-8 w-full items-center justify-between border-b border-[#2a2a40] px-1 font-[VT323] text-xs tabular-nums hover:bg-[#1a1a28] ${
+                          pair.topWeek === 8 ? 'bg-[#ffe600]/5' : ''
                         }`}
                       >
                         <span
                           className={
                             topVal
-                              ? 'font-bold text-zinc-100'
-                              : 'text-zinc-600'
+                              ? 'font-bold text-[#c0f0ff]'
+                              : 'text-[#2a2a40]'
                           }
                         >
                           {topVal || `${pair.topWeek}`}
                         </span>
                         {topFeel && (
                           <span
-                            className={`h-1.5 w-1.5 rounded-full ${feelingDotClass(
+                            className={`h-1.5 w-1.5 ${feelingDotClass(
                               topFeel
                             )}`}
                           />
@@ -325,22 +326,22 @@ export function LogbookView({
                       <button
                         type="button"
                         onClick={() => onJumpToSession(pair.bottomWeek, dayId)}
-                        className={`flex h-8 w-full items-center justify-between px-1.5 text-[10px] tabular-nums hover:bg-zinc-800/60 ${
-                          pair.bottomWeek === 16 ? 'bg-amber-500/5' : ''
+                        className={`flex h-8 w-full items-center justify-between px-1 font-[VT323] text-xs tabular-nums hover:bg-[#1a1a28] ${
+                          pair.bottomWeek === 16 ? 'bg-[#ffe600]/5' : ''
                         }`}
                       >
                         <span
                           className={
                             botVal
-                              ? 'font-bold text-zinc-100'
-                              : 'text-zinc-600'
+                              ? 'font-bold text-[#c0f0ff]'
+                              : 'text-[#2a2a40]'
                           }
                         >
                           {botVal || `${pair.bottomWeek}`}
                         </span>
                         {botFeel && (
                           <span
-                            className={`h-1.5 w-1.5 rounded-full ${feelingDotClass(
+                            className={`h-1.5 w-1.5 ${feelingDotClass(
                               botFeel
                             )}`}
                           />
@@ -357,4 +358,3 @@ export function LogbookView({
     </div>
   );
 }
-

@@ -208,24 +208,24 @@ export function CalendarView({
   return (
     <div className="space-y-3.5 pb-4">
       {/* Month Header */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-3.5">
+      <div className="pixel-card p-3.5">
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
             onClick={goPrevMonth}
             aria-label="Previous month"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-200 active:bg-zinc-800"
+            className="flex h-9 w-9 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#c0f0ff] active:translate-x-[1px] active:translate-y-[1px]"
+            style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.7)' }}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
 
           <div className="text-center">
-            <h2 className="text-base font-extrabold text-zinc-100">
+            <h2 className="pixel-heading text-xs text-[#00f0ff] glow-cyan">
               {monthLabel}
             </h2>
-            <p className="text-[11px] text-zinc-400">
-              {monthWorkoutsCount} workouts • {monthWarmupDaysCount} warm-up
-              days
+            <p className="mt-0.5 font-[VT323] text-sm text-[#5a6a78]">
+              {monthWorkoutsCount} workouts • {monthWarmupDaysCount} warm-up days
             </p>
           </div>
 
@@ -233,7 +233,7 @@ export function CalendarView({
             <button
               type="button"
               onClick={jumpToToday}
-              className="rounded-xl border border-zinc-800 bg-zinc-950 px-2.5 py-2 text-[11px] font-bold text-amber-300 active:bg-zinc-800"
+              className="pixel-btn px-2 py-1.5 text-[8px]"
             >
               Today
             </button>
@@ -241,7 +241,8 @@ export function CalendarView({
               type="button"
               onClick={goNextMonth}
               aria-label="Next month"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-200 active:bg-zinc-800"
+              className="flex h-9 w-9 items-center justify-center border-2 border-[#2a2a40] bg-[#111118] text-[#c0f0ff] active:translate-x-[1px] active:translate-y-[1px]"
+              style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.7)' }}
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -249,7 +250,7 @@ export function CalendarView({
         </div>
 
         {/* Weekday Headers */}
-        <div className="mt-3 grid grid-cols-7 gap-1 text-center text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+        <div className="mt-3 grid grid-cols-7 gap-1 text-center pixel-label text-[8px] text-[#5a6a78]">
           {WEEKDAYS.map((wd) => (
             <div key={wd} className="py-1">
               {wd}
@@ -261,7 +262,7 @@ export function CalendarView({
         <div className="grid grid-cols-7 gap-1">
           {calendarCells.map((cell, idx) => {
             if (!cell) {
-              return <div key={`empty-${idx}`} className="h-14 rounded-xl" />;
+              return <div key={`empty-${idx}`} className="h-14 border border-transparent" />;
             }
 
             const daySessions = sessionsByDate.get(cell.dateKey) ?? [];
@@ -274,29 +275,30 @@ export function CalendarView({
                 key={cell.dateKey}
                 type="button"
                 onClick={() => setSelectedDateKey(cell.dateKey)}
-                className={`relative flex h-14 flex-col items-center justify-start rounded-xl border p-1 transition-all active:scale-95 ${
+                className={`relative flex h-14 flex-col items-center justify-start border-2 p-1 transition-all active:scale-95 ${
                   isSelected
-                    ? 'border-amber-400 bg-amber-500/15 ring-1 ring-amber-400/50'
+                    ? 'border-[#00f0ff] bg-[#00f0ff]/15 box-glow-cyan'
                     : isToday
-                    ? 'border-zinc-600 bg-zinc-800/70'
-                    : 'border-zinc-800/70 bg-zinc-950/60 hover:bg-zinc-900'
+                    ? 'border-[#ffe600] bg-[#ffe600]/10'
+                    : 'border-[#2a2a40] bg-[#111118] hover:border-[#3a3a55]'
                 }`}
+                style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.5)' }}
               >
                 <div className="flex w-full items-center justify-between px-0.5">
                   <span
-                    className={`text-[11px] font-bold tabular-nums ${
+                    className={`font-[VT323] text-sm font-bold tabular-nums ${
                       isSelected
-                        ? 'text-amber-300'
+                        ? 'text-[#00f0ff]'
                         : isToday
-                        ? 'text-zinc-100'
-                        : 'text-zinc-400'
+                        ? 'text-[#ffe600]'
+                        : 'text-[#c0f0ff]'
                     }`}
                   >
                     {cell.day}
                   </span>
                   {warmupCount > 0 && (
                     <span
-                      className="h-1.5 w-1.5 rounded-full bg-emerald-400"
+                      className="h-1.5 w-1.5 bg-[#39ff14] shadow-[0_0_4px_#39ff14]"
                       title="Warm-up logged"
                     />
                   )}
@@ -312,10 +314,10 @@ export function CalendarView({
                     return (
                       <span
                         key={sd.id}
-                        className={`truncate rounded px-1 py-0.5 text-[9px] font-extrabold leading-none tabular-nums ${
+                        className={`truncate px-0.5 py-0.5 font-[VT323] text-[10px] font-extrabold leading-none tabular-nums ${
                           finished
-                            ? 'bg-emerald-500/25 text-emerald-300'
-                            : 'bg-amber-500/25 text-amber-300'
+                            ? 'border border-[#39ff14]/50 bg-[#39ff14]/20 text-[#39ff14]'
+                            : 'border border-[#00f0ff]/50 bg-[#00f0ff]/20 text-[#00f0ff]'
                         }`}
                       >
                         W{sd.week}·D{sd.dayId}
@@ -323,7 +325,7 @@ export function CalendarView({
                     );
                   })}
                   {daySessions.length > 2 && (
-                    <span className="text-[8px] font-bold text-zinc-400">
+                    <span className="font-[VT323] text-[10px] text-[#5a6a78]">
                       +{daySessions.length - 2}
                     </span>
                   )}
@@ -335,32 +337,32 @@ export function CalendarView({
       </div>
 
       {/* Selected Date Details & Session Matcher */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 p-3.5 space-y-3.5">
+      <div className="pixel-card p-3.5 space-y-3.5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <div className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-400">
+            <div className="flex items-center gap-1.5 pixel-label text-[#00f0ff]">
               <CalendarCheck2 className="h-3.5 w-3.5" />
               {selectedDateKey === todayKey ? 'Today' : 'Selected Gym Date'}
             </div>
-            <h3 className="mt-0.5 text-sm font-extrabold text-zinc-100">
+            <h3 className="mt-0.5 font-[VT323] text-xl font-bold text-[#c0f0ff]">
               {formatLongDate(selectedDateKey)}
             </h3>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-950 px-2.5 py-1.5 text-xs">
+          <div className="flex items-center gap-1.5 border-2 border-[#2a2a40] bg-[#111118] px-2.5 py-1.5 font-[VT323] text-sm">
             <Flame
               className={`h-3.5 w-3.5 ${
-                selectedWarmups > 0 ? 'text-emerald-400' : 'text-zinc-600'
+                selectedWarmups > 0 ? 'text-[#39ff14]' : 'text-[#5a6a78]'
               }`}
             />
-            <span className="font-semibold text-zinc-300">
+            <span className="font-semibold text-[#c0f0ff]">
               Warm-up: {selectedWarmups}/6
             </span>
             {selectedDateKey === todayKey && (
               <button
                 type="button"
                 onClick={onOpenWarmup}
-                className="ml-1 font-bold text-amber-400 underline"
+                className="ml-1 font-bold text-[#00f0ff] underline"
               >
                 Open
               </button>
@@ -381,19 +383,20 @@ export function CalendarView({
               return (
                 <div
                   key={sd.id}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-3"
+                  className="border-2 border-[#2a2a40] bg-[#111118] p-3"
+                  style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-300">
+                      <div className="flex items-center gap-1.5 font-[VT323] text-lg font-bold text-[#00f0ff]">
                         <span>Week {sd.week} • {dayDef?.shortTitle}</span>
                         {isSubmitted && (
-                          <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-bold text-emerald-300">
+                          <span className="border border-[#39ff14] bg-[#39ff14]/20 px-1 font-[VT323] text-xs text-[#39ff14]">
                             Submitted
                           </span>
                         )}
                       </div>
-                      <div className="mt-0.5 text-[11px] text-zinc-400">
+                      <div className="font-[VT323] text-sm text-[#5a6a78]">
                         {done}/{total} sets logged
                       </div>
                     </div>
@@ -404,7 +407,7 @@ export function CalendarView({
                         onClick={() =>
                           onOpenSession(sd.week, sd.dayId, sd.dateKey)
                         }
-                        className="flex items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1.5 text-xs font-bold text-zinc-950 active:bg-amber-400"
+                        className="pixel-btn flex items-center gap-1 px-2.5 py-1 text-[9px]"
                       >
                         <Dumbbell className="h-3.5 w-3.5" />
                         Open
@@ -413,22 +416,22 @@ export function CalendarView({
                         type="button"
                         onClick={() => handleUnlinkDate(sd.id)}
                         aria-label="Unlink date"
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-rose-300 active:bg-zinc-800"
+                        className="flex h-8 w-8 items-center justify-center border-2 border-[#2a2a40] bg-[#0a0a0f] text-[#5a6a78] hover:text-[#ff2d95] active:bg-[#1a1a28]"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
 
-                  <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-zinc-800/70 pt-2">
-                    <span className="text-[11px] text-zinc-500">Move date:</span>
+                  <div className="mt-2.5 flex items-center justify-between gap-2 border-t-2 border-[#2a2a40] pt-2">
+                    <span className="font-[VT323] text-sm text-[#5a6a78]">Move date:</span>
                     <input
                       type="date"
                       value={sd.dateKey}
                       onChange={(e) =>
                         handleMoveSessionDate(sd, e.target.value)
                       }
-                      className="rounded-lg border border-zinc-800 bg-zinc-900 px-2 py-1 text-xs font-semibold text-zinc-200"
+                      className="border border-[#2a2a40] bg-[#0a0a0f] px-2 py-0.5 font-[VT323] text-xs text-[#00f0ff]"
                     />
                   </div>
                 </div>
@@ -436,22 +439,22 @@ export function CalendarView({
             })}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-950/40 px-3 py-2 text-xs text-zinc-400">
+          <div className="border-2 border-dashed border-[#2a2a40] bg-[#0a0a0f] px-3 py-2 font-[VT323] text-sm text-[#5a6a78]">
             Rest / off day — no workout matched.
           </div>
         )}
 
         {/* Match a Workout to Selected Date */}
-        <div className="space-y-2.5 border-t border-zinc-800 pt-3">
+        <div className="space-y-2.5 border-t-2 border-[#2a2a40] pt-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-bold text-zinc-200">
+            <span className="pixel-label text-[#c0f0ff]">
               Match to {formatShortDayMonth(selectedDateKey)}
             </span>
             <select
               value={assignWeek}
               onChange={(e) => setAssignWeek(Number(e.target.value))}
               aria-label="Select week to match"
-              className="rounded-lg border border-zinc-700 bg-zinc-950 px-2.5 py-1 text-xs font-bold text-amber-300"
+              className="border-2 border-[#2a2a40] bg-[#0a0a0f] px-2 py-0.5 font-[VT323] text-sm text-[#00f0ff]"
             >
               {Array.from({ length: 16 }, (_, i) => i + 1).map((w) => (
                 <option key={w} value={w}>
@@ -470,14 +473,15 @@ export function CalendarView({
                   key={d.id}
                   type="button"
                   onClick={() => setAssignDayId(d.id)}
-                  className={`flex flex-col items-start rounded-xl border px-2.5 py-2 text-left transition-all duration-150 active:scale-95 ${
+                  className={`flex flex-col items-start border-2 px-2.5 py-1.5 text-left transition-all duration-100 active:scale-95 ${
                     active
-                      ? 'border-amber-500/70 bg-amber-500/15 text-amber-200'
-                      : 'border-zinc-800 bg-zinc-950/70 text-zinc-300'
+                      ? 'border-[#00f0ff] bg-[#00f0ff]/15 text-[#00f0ff] box-glow-cyan'
+                      : 'border-[#2a2a40] bg-[#111118] text-[#5a6a78]'
                   }`}
+                  style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,0.6)' }}
                 >
-                  <span className="text-xs font-bold">{d.shortTitle}</span>
-                  <span className="mt-0.5 text-[10px] text-zinc-400">
+                  <span className="font-[VT323] text-base font-bold">{d.shortTitle}</span>
+                  <span className="font-[VT323] text-xs text-[#5a6a78]">
                     {existing
                       ? formatShortDayMonth(existing.dateKey)
                       : 'Unassigned'}
@@ -490,7 +494,7 @@ export function CalendarView({
           <button
             type="button"
             onClick={handleMatchAndOpen}
-            className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-amber-500 text-xs font-extrabold text-zinc-950 transition-transform active:scale-[0.99] active:bg-amber-400"
+            className="pixel-btn-solid flex h-10 w-full items-center justify-center gap-1.5 text-[9px]"
           >
             <Plus className="h-4 w-4 stroke-[2.5]" />
             Match W{assignWeek} • D{assignDayId} & Open
@@ -500,4 +504,3 @@ export function CalendarView({
     </div>
   );
 }
-
